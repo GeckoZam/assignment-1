@@ -193,7 +193,7 @@ class Program
 3. Clonación: El método Clone() permite clonar personajes con el mismo estado que el original (como salud y energía). Esto permite crear rápidamente nuevos personajes sin tener que iniciar desde cero.
 4. Gestión del Ciclo de Vida: Métodos como TakeDamage(), UseEnergy(), Heal() y RestoreEnergy() permiten gestionar el estado del personaje a lo largo de una batalla o evento. Estos métodos simulan el ciclo de vida del personaje, permitiendo cambios en sus atributos según lo que ocurra en el juego.
 
-### Corrida codigo
+### Salida del codigo
 ```yaml
 Personajes originales:
 Guerrero Aragorn - Salud: 100, Energía: 50, Arma: Espada
