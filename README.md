@@ -221,5 +221,139 @@ Gandalf restauró 50 puntos de energía. Energía actual: 100
 - **Dominio**: Industrial
 - **Requisito**: Extensibilidad y Mantenibilidad
 - **Patrón de Diseño Seleccionado**: Decorator
+## Problema planteado
+En una planta de fabricación, las máquinas de producción básicas necesitan ser mejoradas con características adicionales como control de temperatura, sensores de seguridad, y control de velocidad. El problema es que no queremos modificar el código original de la máquina para cada nueva característica, ya que eso haría el sistema difícil de mantener y extender.
 
+## Solución
+Usaremos el patrón Decorator para agregar funcionalidades adicionales a las máquinas de manera dinámica, sin modificar la clase base de la máquina. Cada decorador proporcionará una característica adicional (por ejemplo, control de temperatura o sensores de seguridad), permitiendo una arquitectura más flexible y extensible.
+
+### Codigo solución
+```c#
+using System;
+
+// Step 1: Definir la interfaz base (IMachine)
+public interface IMachine
+{
+    void Operate();  // Método para realizar la operación de la máquina
+}
+
+// Step 2: Implementar la clase concreta (BasicMachine)
+public class BasicMachine : IMachine
+{
+    public void Operate()
+    {
+        Console.WriteLine("Operando máquina básica.");
+    }
+}
+
+// Step 3: Crear la clase base Decorator que implementa la interfaz de la máquina
+public abstract class MachineDecorator : IMachine
+{
+    protected IMachine _machine;
+
+    public MachineDecorator(IMachine machine)
+    {
+        _machine = machine;
+    }
+
+    public virtual void Operate()
+    {
+        _machine.Operate(); // Delegar la operación a la máquina básica
+    }
+}
+
+// Step 4: Crear decoradores concretos para agregar funcionalidad adicional
+public class TemperatureControlDecorator : MachineDecorator
+{
+    public TemperatureControlDecorator(IMachine machine) : base(machine) { }
+
+    // Agregar la funcionalidad de control de temperatura
+    public override void Operate()
+    {
+        base.Operate();
+        Console.WriteLine("Controlando la temperatura de la máquina.");
+    }
+}
+
+public class SpeedControlDecorator : MachineDecorator
+{
+    public SpeedControlDecorator(IMachine machine) : base(machine) { }
+
+    // Agregar la funcionalidad de control de velocidad
+    public override void Operate()
+    {
+        base.Operate();
+        Console.WriteLine("Controlando la velocidad de la máquina.");
+    }
+}
+
+public class SafetySensorDecorator : MachineDecorator
+{
+    public SafetySensorDecorator(IMachine machine) : base(machine) { }
+
+    // Agregar la funcionalidad de sensores de seguridad
+    public override void Operate()
+    {
+        base.Operate();
+        Console.WriteLine("Monitoreando los sensores de seguridad.");
+    }
+}
+
+// Step 5: Implementar el cliente para probar las máquinas con decoradores
+class Program
+{
+    static void Main(string[] args)
+    {
+        // Crear una máquina básica
+        IMachine basicMachine = new BasicMachine();
+        Console.WriteLine("Máquina básica:");
+        basicMachine.Operate();
+
+        // Decorar la máquina con control de temperatura
+        IMachine temperatureControlledMachine = new TemperatureControlDecorator(basicMachine);
+        Console.WriteLine("\nMáquina con control de temperatura:");
+        temperatureControlledMachine.Operate();
+
+        // Decorar la máquina con control de temperatura y velocidad
+        IMachine fullyControlledMachine = new SpeedControlDecorator(temperatureControlledMachine);
+        Console.WriteLine("\nMáquina con control de temperatura y velocidad:");
+        fullyControlledMachine.Operate();
+
+        // Decorar la máquina con control de temperatura, velocidad y sensores de seguridad
+        IMachine fullyEnhancedMachine = new SafetySensorDecorator(fullyControlledMachine);
+        Console.WriteLine("\nMáquina con control de temperatura, velocidad y sensores de seguridad:");
+        fullyEnhancedMachine.Operate();
+    }
+}
+```
+## Explicación del código
+1. Interfaz base (IMachine): Define el método Operate() que representa el funcionamiento básico de la máquina.
+2. Clase concreta (BasicMachine): Esta clase implementa la interfaz IMachine y representa una máquina simple que realiza una operación básica.
+3. Clase base Decorator (MachineDecorator): Es una clase abstracta que implementa la interfaz IMachine. Esta clase contiene una referencia a una instancia de IMachine y delega la llamada a su método Operate(). Las subclases decoradoras extienden esta clase para añadir funcionalidad adicional sin modificar la máquina original.
+4. Decoradores concretos:
+    - TemperatureControlDecorator: Añade la funcionalidad de control de temperatura a la máquina.
+    - SpeedControlDecorator: Añade la funcionalidad de control de velocidad a la máquina.
+    - SafetySensorDecorator: Añade la funcionalidad de monitoreo de sensores de seguridad.
+5. Cliente (Program): El cliente puede crear una máquina básica y agregarle decoradores según sea necesario. Cada decorador extiende el comportamiento de la máquina básica sin cambiar su código original.
+
+### Salida del código
+```yaml
+Máquina básica:
+Operando máquina básica.
+
+Máquina con control de temperatura:
+Operando máquina básica.
+Controlando la temperatura de la máquina.
+
+Máquina con control de temperatura y velocidad:
+Operando máquina básica.
+Controlando la temperatura de la máquina.
+Controlando la velocidad de la máquina.
+
+Máquina con control de temperatura, velocidad y sensores de seguridad:
+Operando máquina básica.
+Controlando la temperatura de la máquina.
+Controlando la velocidad de la máquina.
+Monitoreando los sensores de seguridad.
+```
   
